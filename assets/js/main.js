@@ -58,10 +58,17 @@ requirejs([], function() {
             stats.domElement.style.right = '0px';
             stats.domElement.style.bottom = '0px';
             document.body.appendChild( stats.domElement );
-            $('.loader-wrapper').fadeOut(function () {
+            $.when(
+                $('.loader-wrapper').fadeOut(),
+                $.get('/player1.js'),
+                $.get('/player2.js')
+            ).done(function (_0, player1, player2) {
                 setTimeout(function () {
-                    $('#btn-run').click()
-                }, 500);
+                    $('#btn-run').toggleClass('btn-success').toggleClass('btn-danger').toggleClass('text-stop').toggleClass('text-run').find('span').toggleClass('glyphicon-play').toggleClass('glyphicon-stop');
+                    game.setScript(0, player1[0]);
+                    game.setScript(1, player2[0]);
+                    game.run();
+                }, 200);
             });
         });
     });
