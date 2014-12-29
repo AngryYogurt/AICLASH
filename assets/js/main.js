@@ -27,10 +27,6 @@ requirejs([], function() {
                 $('#code-editor-wrap').toggleClass('code-editor-visible');
                 $(this).find('span').toggleClass('glyphicon-chevron-down').toggleClass('glyphicon-chevron-up');
             });
-            setTimeout(function() {
-                $('#code-editor-wrap').toggleClass('code-editor-visible');
-                $(this).find('span').toggleClass('glyphicon-chevron-down').toggleClass('glyphicon-chevron-up');
-            }, 500);
             $('#tabs>ul>li').click(function() {
                 $('#code-editors').animate({'left': (- parseInt($(this).attr('data-editor')) * 100) + '%'});
                 $('#tabs>ul>li').removeClass('active');
@@ -62,7 +58,11 @@ requirejs([], function() {
             stats.domElement.style.right = '0px';
             stats.domElement.style.bottom = '0px';
             document.body.appendChild( stats.domElement );
-            $('.loader-wrapper').fadeOut();
+            $('.loader-wrapper').fadeOut(function () {
+                setTimeout(function () {
+                    $('#btn-run').click()
+                }, 500);
+            });
         });
     });
 });
