@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+    <title>AIClash 评测平台介绍 - AIClash</title>
+    <style>
+/*** Wandering Cubes ***/
+
+.loader-wrapper {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background: #2980b9;
+  z-index: 9999;
+}
+
+.loader {
+  width: 58px;
+  height: 58px;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  margin-top: -29px;
+  margin-left: -29px;
+}
+
+.cube1, .cube2 {
+  width: 16px;
+  height: 16px;
+  background-color: #fff;
+  position: absolute;
+  top: 0;
+  left: 0;
+  
+  -webkit-animation: cubemove 1.8s infinite ease-in-out;
+  animation: cubemove 1.8s infinite ease-in-out;
+}
+
+.cube2 {
+  -webkit-animation-delay: -0.9s;
+  animation-delay: -0.9s;
+}
+
+@-webkit-keyframes cubemove {
+  25% { -webkit-transform: translateX(42px) rotate(-90deg) scale(0.5) }
+  50% { -webkit-transform: translateX(42px) translateY(42px) rotate(-180deg) }
+  75% { -webkit-transform: translateX(0px) translateY(42px) rotate(-270deg) scale(0.5) }
+  100% { -webkit-transform: rotate(-360deg) }
+}
+
+@keyframes cubemove {
+  25% { 
+    transform: translateX(42px) rotate(-90deg) scale(0.5);
+    -webkit-transform: translateX(42px) rotate(-90deg) scale(0.5);
+  } 50% { 
+    transform: translateX(42px) translateY(42px) rotate(-179deg);
+    -webkit-transform: translateX(42px) translateY(42px) rotate(-179deg);
+  } 50.1% { 
+    transform: translateX(42px) translateY(42px) rotate(-180deg);
+    -webkit-transform: translateX(42px) translateY(42px) rotate(-180deg);
+  } 75% { 
+    transform: translateX(0px) translateY(42px) rotate(-270deg) scale(0.5);
+    -webkit-transform: translateX(0px) translateY(42px) rotate(-270deg) scale(0.5);
+  } 100% { 
+    transform: rotate(-360deg);
+    -webkit-transform: rotate(-360deg);
+  }
+}
+</style>
+
+    <!-- Bootstrap -->
+    <link href="/platform/assets/lib/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/platform/assets/css/styles.css" rel="stylesheet">
+
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    <script src="/platform/assets/lib/jquery/js/jquery-2.1.1.min.js"></script>
+    <script>baseUrl = '/platform';</script>
+  </head>
+  <body>
+
+    <div id="main-wrap">
+      <div class="loader-wrapper">
+  <div class="loader">
+    <div class="cube1"></div>
+    <div class="cube2"></div>
+  </div>
+</div>
+<!--
+    from http://tobiasahlin.com/spinkit/
+--!>
+
+      <div class="jumbotron">
+  <div class="container">
+    <div class="homepage-box">
+      <h1>AIClash</h1>
+      <p>AIClash is clashing live AIs safely & harmoniously. </p>
+      <p><a class="btn btn-primary btn-lg" href="/platform/sandbox/" role="button">Start now</a></p>
+    </div>
+  </div>
+</div>
+<div class="homepage-next">
+  <a>
+    <div>
+      <span class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span>
+    </div>
+  </a>
+</div>
+
+<div class="">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-10 col-md-9 col-sm-8 col-xs-12">
+        <h1>AIClash 评测平台介绍</h1>
+        <p>这是一个可以评测应用于路径搜索的智能算法的多玩家对抗沙箱程序. (限在 Chrome 浏览器下运行)</p>
+
+<h2 id="section">背景</h2>
+
+<p>在 AICLASH 竞技场上, 两支队伍的各三只地精(gnome)分别踏上了直捣对方老巢的征途. </p>
+
+<h2 id="section-1">规则</h2>
+
+<p>游戏规则与传统走迷宫游戏近似, 但略有不同. 各由三只地精组成的两支队伍从矩形网格地图的左上角和右下角出发, 目的地为对方的起点. </p>
+
+<h3 id="section-2">地图</h3>
+
+<p>游戏地图为一个 <code>200 × 150</code> 的格子网络. 每个格子(cell)与其上, 下, 左, 右可以有连接, 其中处在边界上的格子在边界外方向上无连接. 地图由随机的 Kruskal 算法生成, 源码见<a href="/platform/assets/js/lib/map.js">此处</a>. </p>
+
+<p>在游戏中连接状态用一个数字表示. 
+设 <code>c</code> 为一个格子: </p>
+
+<ul>
+  <li>若 <code>c &amp; 1 &gt; 0</code> 则 <code>c</code> 与上方方格连通, </li>
+  <li>若 <code>c &amp; 2 &gt; 0</code> 则 <code>c</code> 与右方方格连通, </li>
+  <li>若 <code>c &amp; 4 &gt; 0</code> 则 <code>c</code> 与下方方格连通, </li>
+  <li>若 <code>c &amp; 8 &gt; 0</code> 则 <code>c</code> 与左方方格连通. </li>
+</ul>
+
+<p>游戏中地图的代码结构: </p>
+
+<pre><code>var map = [
+    [
+        1, 
+        2, 
+        9, 
+        ...
+    ], 
+    ...
+];
+</code></pre>
+
+<p>除地图连通性数据外, 选手还会得到一个描述对手在地图上经过次数的对象: </p>
+
+<pre><code>var visited = {
+    [
+        2, 
+        3, 
+        3, 
+        ... 
+    ]
+    ...
+};
+</code></pre>
+
+<p>地图的左下角和右上角分别有一个持久 buff 药水, 先到此处的地精会使用并使自己的视野增加一倍, 若有两只地精在同一 tick 到达, 只有一只会得到此 buff(<a href="javascript:alert('猜');">哪一只? </a>). </p>
+
+<h3 id="section-3">地精</h3>
+
+<p>每个队伍有三只地精, 每只地精包含横坐标, 纵坐标和视野三个状态. 地精的视野初始值为 15, 也就是可以看到曼哈顿距离(Manhattan distance)为 15 的格子, 两点间曼哈顿距离定义为两点横坐标之差的绝对值与纵坐标之差的绝对值的和. 视野会在得到 buff 后有相应的变化. </p>
+
+<pre><code>var gnome = {
+    x: 0, 
+    y: 0, 
+    vision: 15
+};
+</code></pre>
+
+<h3 id="section-4">运行机制</h3>
+
+<ul>
+  <li>每一个 tick 双方的代码会被调用一次, 给出包含地图, 自己队伍地精状态的数据, 并要求返回一个操作数组; </li>
+  <li>游戏后台会检查操作数组并根据其中的指令操作地精向指定方向前进一步, 若选手给出的操作指令不合法(比如向不连通的方向前进或给出的操作不符合规范), 对应的地精会随机走向一个可用的方向; </li>
+  <li>从调用到收到返回的结果的时间将累计计入这一方的用时; </li>
+  <li>若一方累计用时超过 300 秒, 则不再调用选手的函数该队伍所有地精将进入随机游走状态; </li>
+  <li>随后会标记访问状态数组, 检查是否有 buff 被触发, 检查游戏是否结束(开发版不会检查结束); </li>
+  <li>重复此步骤直至终止条件被满足. </li>
+</ul>
+
+<h3 id="section-5">起始状态和终止条件</h3>
+
+<p>游戏开始时, 双方地精均分别在左上角和右下角. 地精视野为 15. </p>
+
+<p>当以下条件之一被满足时, 游戏结束(开发版并未设置此判断): </p>
+
+<ul>
+  <li>有任一方地精到达另一方起点时; </li>
+  <li>双方均已超时. </li>
+</ul>
+
+<h3 id="section-6">胜负判定</h3>
+
+<p>若游戏结束时, 有且仅有一方达到另一方起点, 则达到起点所在的玩家赢的比赛, 否则为平局. </p>
+
+<h3 id="section-7">积分制度</h3>
+
+<p>比赛将采用<a href="http://en.wikipedia.org/wiki/Elo_rating_system">等级分制度</a>积分, 最终将生成排名结果返回给主办方处理. </p>
+
+<h2 id="section-8">参赛入门</h2>
+
+<p>本评测平台接收 JavaScript 代码, 点击<a href="http://bonsaiden.github.io/JavaScript-Garden/zh/">此处</a>学习 JavaScript. </p>
+
+<p>（（或者, 选手也可以编写其他语言代码并编译至 JavaScript, <a href="https://github.com/jashkenas/coffee-script/wiki/List-of-languages-that-compile-to-JS">这里</a>有一些可选的编译器, 如果选手想用的语言当前没有可用编译至 JavaScript 的编译器, 那么也可以自行编写编译器或者使用其他编译器编译至机器码或 bitcode 或 bytecode 之后再编译至 asm.js 或者 PNaCl. </p>
+
+<h3 id="section-9">选手应该提供什么?</h3>
+
+<p>选手应提供一份可制行的 JavaScript 代码, 其中有注册 <code>onMyTurn</code> 的函数, 且该函数返回一个包含三个数字的数组. 例如: </p>
+
+<pre><code>onMyTurn = function() {
+    return [0, 0, 0];
+};
+</code></pre>
+
+<p>注意: 此代码返回不可用操作, 实际执行表现为随机游走. </p>
+
+<p>另有一个拙劣的例子: <a href="http://goo.gl/R4cS4k">这里</a>, 如果打不开的话可能是被墙了, 就点<a href="/platform/sandbox/#dmFyIGdub21lRGlyID0gW107CnZhciBpZkZpcnN0TW92ZSA9IHRydWU7CgpmdW5jdGlvbiB0dXJuTGVmdChkaXIpIHsKICAgIGRpciA+Pj0gMTsKICAgIGlmKGRpciA9PT0gMCkgewogICAgICAgIGRpciA9IDg7CiAgICB9CiAgICByZXR1cm4gZGlyOwp9CgpmdW5jdGlvbiB0dXJuUmlnaHQoZGlyKSB7CiAgICBkaXIgPDw9IDE7CiAgICBpZihkaXIgPiA4KSB7CiAgICAgICAgZGlyID0gMTsKICAgIH0KICAgIHJldHVybiBkaXI7Cn0KCmZ1bmN0aW9uIGNoZWNrKGdhbWUsIHNyYywgZGlyKSB7CiAgICBpZigoZ2FtZS5tYXAuZGF0YVtzcmMueF1bc3JjLnldICYgZGlyKSA+IDApIHsKICAgICAgICByZXR1cm4gdHJ1ZTsKICAgIH0gZWxzZSB7CiAgICAgICAgcmV0dXJuIGZhbHNlOwogICAgfQp9Cgpvbk15VHVybiA9IGZ1bmN0aW9uKGdhbWUpIHsKICAgIGlmKGlmRmlyc3RNb3ZlKSB7CiAgICAgICAgaWZGaXJzdE1vdmUgPSBmYWxzZTsKICAgICAgICBpZihnYW1lLmdub21lc1swXS54ID09PSAwKSB7CiAgICAgICAgICAgIGdub21lRGlyWzBdID0gMjsKICAgICAgICAgICAgZ25vbWVEaXJbMV0gPSA0OwogICAgICAgIH0gZWxzZSB7CiAgICAgICAgICAgIGdub21lRGlyWzBdID0gMTsKICAgICAgICAgICAgZ25vbWVEaXJbMV0gPSA4OwogICAgICAgIH0KICAgIH0KICAgIHZhciBhY3Rpb24gPSBbXTsKICAgIGdub21lRGlyWzBdID0gdHVyblJpZ2h0KGdub21lRGlyWzBdKTsKICAgIHdoaWxlKGNoZWNrKGdhbWUsIGdhbWUuZ25vbWVzWzBdLCBnbm9tZURpclswXSkgIT09IHRydWUpIHsKICAgICAgICBnbm9tZURpclswXSA9IHR1cm5MZWZ0KGdub21lRGlyWzBdKTsKICAgIH0KICAgIGFjdGlvblswXSA9IGdub21lRGlyWzBdOwogICAgZ25vbWVEaXJbMV0gPSB0dXJuTGVmdChnbm9tZURpclsxXSk7CiAgICB3aGlsZShjaGVjayhnYW1lLCBnYW1lLmdub21lc1sxXSwgZ25vbWVEaXJbMV0pICE9PSB0cnVlKSB7CiAgICAgICAgZ25vbWVEaXJbMV0gPSB0dXJuUmlnaHQoZ25vbWVEaXJbMV0pOwogICAgfQogICAgYWN0aW9uWzFdID0gZ25vbWVEaXJbMV07CiAgICB2YXIgYXZhaWxhYmxlQWN0aW9ucyA9IFtdOwogICAgZm9yKHZhciBpID0gMTsgaSA8IDE2OyBpICo9IDIpIHsKICAgICAgICBpZihjaGVjayhnYW1lLCBnYW1lLmdub21lc1syXSwgaSkgPT09IHRydWUpIHsKICAgICAgICAgICAgYXZhaWxhYmxlQWN0aW9ucy5wdXNoKGkpOwogICAgICAgIH0KICAgIH0KICAgIGFjdGlvblsyXSA9IGF2YWlsYWJsZUFjdGlvbnNbTWF0aC5mbG9vcihNYXRoLnJhbmRvbSgpICogYXZhaWxhYmxlQWN0aW9ucy5sZW5ndGgpXTsKICAgIHJldHVybiBhY3Rpb247Cn07Cn92YXIgZ25vbWVEaXIgPSBbXTsKdmFyIGlmRmlyc3RNb3ZlID0gdHJ1ZTsKCmZ1bmN0aW9uIHR1cm5MZWZ0KGRpcikgewogICAgZGlyID4+PSAxOwogICAgaWYoZGlyID09PSAwKSB7CiAgICAgICAgZGlyID0gODsKICAgIH0KICAgIHJldHVybiBkaXI7Cn0KCmZ1bmN0aW9uIHR1cm5SaWdodChkaXIpIHsKICAgIGRpciA8PD0gMTsKICAgIGlmKGRpciA+IDgpIHsKICAgICAgICBkaXIgPSAxOwogICAgfQogICAgcmV0dXJuIGRpcjsKfQoKZnVuY3Rpb24gY2hlY2soZ2FtZSwgc3JjLCBkaXIpIHsKICAgIGlmKChnYW1lLm1hcC5kYXRhW3NyYy54XVtzcmMueV0gJiBkaXIpID4gMCkgewogICAgICAgIHJldHVybiB0cnVlOwogICAgfSBlbHNlIHsKICAgICAgICByZXR1cm4gZmFsc2U7CiAgICB9Cn0KCm9uTXlUdXJuID0gZnVuY3Rpb24oZ2FtZSkgewogICAgaWYoaWZGaXJzdE1vdmUpIHsKICAgICAgICBpZkZpcnN0TW92ZSA9IGZhbHNlOwogICAgICAgIGlmKGdhbWUuZ25vbWVzWzBdLnggPT09IDApIHsKICAgICAgICAgICAgZ25vbWVEaXJbMF0gPSAyOwogICAgICAgICAgICBnbm9tZURpclsxXSA9IDQ7CiAgICAgICAgfSBlbHNlIHsKICAgICAgICAgICAgZ25vbWVEaXJbMF0gPSAxOwogICAgICAgICAgICBnbm9tZURpclsxXSA9IDg7CiAgICAgICAgfQogICAgfQogICAgdmFyIGFjdGlvbiA9IFtdOwogICAgZ25vbWVEaXJbMF0gPSB0dXJuUmlnaHQoZ25vbWVEaXJbMF0pOwogICAgd2hpbGUoY2hlY2soZ2FtZSwgZ2FtZS5nbm9tZXNbMF0sIGdub21lRGlyWzBdKSAhPT0gdHJ1ZSkgewogICAgICAgIGdub21lRGlyWzBdID0gdHVybkxlZnQoZ25vbWVEaXJbMF0pOwogICAgfQogICAgYWN0aW9uWzBdID0gZ25vbWVEaXJbMF07CiAgICBnbm9tZURpclsxXSA9IHR1cm5MZWZ0KGdub21lRGlyWzFdKTsKICAgIHdoaWxlKGNoZWNrKGdhbWUsIGdhbWUuZ25vbWVzWzFdLCBnbm9tZURpclsxXSkgIT09IHRydWUpIHsKICAgICAgICBnbm9tZURpclsxXSA9IHR1cm5SaWdodChnbm9tZURpclsxXSk7CiAgICB9CiAgICBhY3Rpb25bMV0gPSBnbm9tZURpclsxXTsKICAgIHZhciBhdmFpbGFibGVBY3Rpb25zID0gW107CiAgICBmb3IodmFyIGkgPSAxOyBpIDwgMTY7IGkgKj0gMikgewogICAgICAgIGlmKGNoZWNrKGdhbWUsIGdhbWUuZ25vbWVzWzJdLCBpKSA9PT0gdHJ1ZSkgewogICAgICAgICAgICBhdmFpbGFibGVBY3Rpb25zLnB1c2goaSk7CiAgICAgICAgfQogICAgfQogICAgYWN0aW9uWzJdID0gYXZhaWxhYmxlQWN0aW9uc1tNYXRoLmZsb29yKE1hdGgucmFuZG9tKCkgKiBhdmFpbGFibGVBY3Rpb25zLmxlbmd0aCldOwogICAgcmV0dXJuIGFjdGlvbjsKfTsK">这个链接</a>. </p>
+
+<p>详见<a href="/platform/api/">接口文档</a>. </p>
+
+<h2 id="section-10">评测沙箱使用方法</h2>
+
+<h3 id="section-11">操作说明</h3>
+
+<p>选手将自己的代码输入至代码编辑器之后, 点击 <code>Start</code> 按钮即可开始运行. </p>
+
+<h3 id="section-12">调试</h3>
+
+<p>由于我们的评测平台在线版本使用 web worker 机制防止选手作弊, 所以调试时需要在 Chrome 中打开 worker 调试面板, <a href="http://www.nczonline.net/blog/2009/08/25/web-workers-errors-and-debugging/">这里</a>和<a href="http://blog.csdn.net/donghao526/article/details/9664701">这里</a>讲述了 web worker 中代码的调试方法. </p>
+
+<p>调试时打开 Chrome 开发者工具, 装载代码(点击 <code>Load</code> )完毕后, 在 <code>Sources</code> 标签中的右侧点击 <code>Workers</code> 打开 Web Worker 调试窗口, 这里的 <code>Source</code> 标签中, <code>(no domain)</code> 下的代码即为调试选手提交的脚本. </p>
+
+<p>_注意: 每次装载都会产生新的 Web Worker 线程, 需要重新打开 Web Worker 调试窗口. _</p>
+
+<h2 id="section-13">关于</h2>
+
+<p>作者: Simonmysun</p>
+
+<!--鸣谢: Friends-->
+
+<h2 id="copyright--licence">版权和开放许可 - Copyright &amp; Licence</h2>
+
+<h3 id="code-of-the-platform">平台代码 - Code of the platform</h3>
+
+<p>MIT</p>
+
+<h3 id="code-of-participant">使用者提交的代码 - Code of participant</h3>
+<p>使用者提交的内容指从本网站可以下载的所有数据. </p>
+
+<p>Code of participant are all data that can be downloaded from the website. </p>
+
+<p>你可以用这些代码在本网站上运行, 也可以缓存或在本地储存. 但除非原作者(们)许可, 你不能出于任何目的修改或重新发布这些代码. 为了本地测试和实验, 你可以使用你自己修改的而非其他人修改的任何版本的 AIClash. </p>
+
+<p>You may use the code to play the original AICLASH as served from this website, and you may cache or copy it locally. However, you may not modify or redistribute the code for any purpose unless you have a separate license from the owner(s) to do so. To enable local testing and experimenting, you may use the code with versions of AIClash that you yourself have modified, but not if the modifications were made by someone else.</p>
+
+      </div>
+      <div class="col-lg-2 col-md-3 col-sm-4 col-xs-12">
+        <h4>Recent Posts</h4>
+
+        <div class="">
+          <h5 class=""><a href="/platform/2014/12/26/rules-updated.html" title="比赛规则时间相关部分更新">比赛规则时间相关部分更新</a></h5>
+        </div>
+
+        <div class="">
+          <h5 class=""><a href="/platform/2014/12/21/lets-start.html" title="AIClash 评测平台发布">AIClash 评测平台发布</a></h5>
+        </div>
+
+
+      </div>
+  </div>
+</div>
+<footer>
+  <hr>
+  <div class="container">
+    by <a href="http://i.makelove.expert" target="_blank">MYSun</a>
+  </div>
+</footer>
+
+
+        <div id="menu-wrap" style="display: none;">
+    <div id="menu">
+      <ul class="nav nav-pills nav-stacked">
+        <li>
+          <a href="/platform/"><big>AIClash</big></a>
+        </li>
+        <li>
+          <a href="/platform/"><span class="glyphicon glyphicon-home"></span>&nbsp;Home</a>
+        </li>
+        <li>
+          <a href="/platform/intro/"><span class="glyphicon glyphicon-info-sign"></span>&nbsp;Introduction</a>
+        </li>
+        <li>
+          <a href="/platform/sandbox/"><span class="glyphicon glyphicon-tower"></span>&nbsp;Sandbox</a>
+        </li>
+        <li>
+          <a href="/platform/api/"><span class="glyphicon glyphicon-file"></span>&nbsp;APIs</a>
+        </li>
+<!--        <li>
+          <a href="/platform/demo/"><span class="glyphicon glyphicon-send"></span>&nbsp;Demos</a>
+        </li>-->
+      </ul>
+    </div>
+  </div>
+  <a class="btn btn-primary" id="menu-btn"><span class="glyphicon glyphicon-th"></span>&nbsp;Menu</a>
+
+    </div>
+
+    <script src="/platform/assets/lib/bootstrap/js/bootstrap.min.js"></script>
+    <script src="/platform/assets/lib/prefixfree/js/prefixfree.min.js"></script>
+    <script src="/platform/assets/js/scripts.js"></script>
+    <script>
+  ga = function () {};
+
+  ga('create', 'UA-57975752-1', 'auto');
+  ga('send', 'pageview');
+
+    </script>
+  </body>
+</html>

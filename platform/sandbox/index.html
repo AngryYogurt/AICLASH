@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+    <title>Sandbox - AIClash</title>
+    <style>
+/*** Wandering Cubes ***/
+
+.loader-wrapper {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background: #2980b9;
+  z-index: 9999;
+}
+
+.loader {
+  width: 58px;
+  height: 58px;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  margin-top: -29px;
+  margin-left: -29px;
+}
+
+.cube1, .cube2 {
+  width: 16px;
+  height: 16px;
+  background-color: #fff;
+  position: absolute;
+  top: 0;
+  left: 0;
+  
+  -webkit-animation: cubemove 1.8s infinite ease-in-out;
+  animation: cubemove 1.8s infinite ease-in-out;
+}
+
+.cube2 {
+  -webkit-animation-delay: -0.9s;
+  animation-delay: -0.9s;
+}
+
+@-webkit-keyframes cubemove {
+  25% { -webkit-transform: translateX(42px) rotate(-90deg) scale(0.5) }
+  50% { -webkit-transform: translateX(42px) translateY(42px) rotate(-180deg) }
+  75% { -webkit-transform: translateX(0px) translateY(42px) rotate(-270deg) scale(0.5) }
+  100% { -webkit-transform: rotate(-360deg) }
+}
+
+@keyframes cubemove {
+  25% { 
+    transform: translateX(42px) rotate(-90deg) scale(0.5);
+    -webkit-transform: translateX(42px) rotate(-90deg) scale(0.5);
+  } 50% { 
+    transform: translateX(42px) translateY(42px) rotate(-179deg);
+    -webkit-transform: translateX(42px) translateY(42px) rotate(-179deg);
+  } 50.1% { 
+    transform: translateX(42px) translateY(42px) rotate(-180deg);
+    -webkit-transform: translateX(42px) translateY(42px) rotate(-180deg);
+  } 75% { 
+    transform: translateX(0px) translateY(42px) rotate(-270deg) scale(0.5);
+    -webkit-transform: translateX(0px) translateY(42px) rotate(-270deg) scale(0.5);
+  } 100% { 
+    transform: rotate(-360deg);
+    -webkit-transform: rotate(-360deg);
+  }
+}
+</style>
+
+    <!-- Bootstrap -->
+    <link href="/platform/assets/lib/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/platform/assets/css/styles.css" rel="stylesheet">
+
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    <script src="/platform/assets/lib/jquery/js/jquery-2.1.1.min.js"></script>
+    <script>baseUrl = '/platform';</script>
+  </head>
+  <body>
+
+    <div id="main-wrap">
+      <div class="loader-wrapper">
+  <div class="loader">
+    <div class="cube1"></div>
+    <div class="cube2"></div>
+  </div>
+</div>
+<!--
+    from http://tobiasahlin.com/spinkit/
+--!>
+
+      <div id="code-editor-wrap">
+  <div id="tabs">
+    <ul class="nav nav-tabs">
+      <li class="active" data-editor="0"><a>Player 1</a></li>
+      <li data-editor="1"><a>Player 2</a></li>
+    </ul>
+  </div>
+  <div id="code-editors-container">
+    <div id="code-editors">
+      <div class="editor-wrap">
+        <div class="code-editor" id="editor0"></div>
+      </div>
+      <div class="editor-wrap">
+        <div class="code-editor" id="editor1"></div>
+      </div>
+    </div>
+  </div>
+  <div id="ctrl-btn">
+    <a class="btn btn-info" id="code-editor-btn"><span class="glyphicon glyphicon-chevron-up"></span>&nbsp;Code</a>
+    <a class="btn btn-success text-run" id="btn-run"><span class="glyphicon glyphicon-play"></span>&nbsp;</a>
+    <a class="btn btn-warning" id="btn-share"><span class="glyphicon glyphicon-share-alt"></span></a>
+  </div>
+</div>
+<div id="canvas-wrap">
+  <div id="canvas-container">
+    <canvas id="canvas" width="798px" height="598px"></canvas>
+  </div>
+</div>
+
+<script data-main="/platform/assets/js/main" src="/platform/assets/lib/requirejs/js/require.js"></script>
+
+        <div id="menu-wrap" style="display: none;">
+    <div id="menu">
+      <ul class="nav nav-pills nav-stacked">
+        <li>
+          <a href="/platform/"><big>AIClash</big></a>
+        </li>
+        <li>
+          <a href="/platform/"><span class="glyphicon glyphicon-home"></span>&nbsp;Home</a>
+        </li>
+        <li>
+          <a href="/platform/intro/"><span class="glyphicon glyphicon-info-sign"></span>&nbsp;Introduction</a>
+        </li>
+        <li>
+          <a href="/platform/sandbox/"><span class="glyphicon glyphicon-tower"></span>&nbsp;Sandbox</a>
+        </li>
+        <li>
+          <a href="/platform/api/"><span class="glyphicon glyphicon-file"></span>&nbsp;APIs</a>
+        </li>
+<!--        <li>
+          <a href="/platform/demo/"><span class="glyphicon glyphicon-send"></span>&nbsp;Demos</a>
+        </li>-->
+      </ul>
+    </div>
+  </div>
+  <a class="btn btn-primary" id="menu-btn"><span class="glyphicon glyphicon-th"></span>&nbsp;Menu</a>
+
+    </div>
+
+    <script src="/platform/assets/lib/bootstrap/js/bootstrap.min.js"></script>
+    <script src="/platform/assets/lib/prefixfree/js/prefixfree.min.js"></script>
+    <script src="/platform/assets/js/scripts.js"></script>
+    <script>
+  ga = function () {};
+
+  ga('create', 'UA-57975752-1', 'auto');
+  ga('send', 'pageview');
+
+    </script>
+  </body>
+</html>

@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+    <title>AIClash 评测平台选手接口文档 - AIClash</title>
+    <style>
+/*** Wandering Cubes ***/
+
+.loader-wrapper {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background: #2980b9;
+  z-index: 9999;
+}
+
+.loader {
+  width: 58px;
+  height: 58px;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  margin-top: -29px;
+  margin-left: -29px;
+}
+
+.cube1, .cube2 {
+  width: 16px;
+  height: 16px;
+  background-color: #fff;
+  position: absolute;
+  top: 0;
+  left: 0;
+  
+  -webkit-animation: cubemove 1.8s infinite ease-in-out;
+  animation: cubemove 1.8s infinite ease-in-out;
+}
+
+.cube2 {
+  -webkit-animation-delay: -0.9s;
+  animation-delay: -0.9s;
+}
+
+@-webkit-keyframes cubemove {
+  25% { -webkit-transform: translateX(42px) rotate(-90deg) scale(0.5) }
+  50% { -webkit-transform: translateX(42px) translateY(42px) rotate(-180deg) }
+  75% { -webkit-transform: translateX(0px) translateY(42px) rotate(-270deg) scale(0.5) }
+  100% { -webkit-transform: rotate(-360deg) }
+}
+
+@keyframes cubemove {
+  25% { 
+    transform: translateX(42px) rotate(-90deg) scale(0.5);
+    -webkit-transform: translateX(42px) rotate(-90deg) scale(0.5);
+  } 50% { 
+    transform: translateX(42px) translateY(42px) rotate(-179deg);
+    -webkit-transform: translateX(42px) translateY(42px) rotate(-179deg);
+  } 50.1% { 
+    transform: translateX(42px) translateY(42px) rotate(-180deg);
+    -webkit-transform: translateX(42px) translateY(42px) rotate(-180deg);
+  } 75% { 
+    transform: translateX(0px) translateY(42px) rotate(-270deg) scale(0.5);
+    -webkit-transform: translateX(0px) translateY(42px) rotate(-270deg) scale(0.5);
+  } 100% { 
+    transform: rotate(-360deg);
+    -webkit-transform: rotate(-360deg);
+  }
+}
+</style>
+
+    <!-- Bootstrap -->
+    <link href="/platform/assets/lib/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/platform/assets/css/styles.css" rel="stylesheet">
+
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    <script src="/platform/assets/lib/jquery/js/jquery-2.1.1.min.js"></script>
+    <script>baseUrl = '/platform';</script>
+  </head>
+  <body>
+
+    <div id="main-wrap">
+      <div class="loader-wrapper">
+  <div class="loader">
+    <div class="cube1"></div>
+    <div class="cube2"></div>
+  </div>
+</div>
+<!--
+    from http://tobiasahlin.com/spinkit/
+--!>
+
+      <div class="jumbotron">
+  <div class="container">
+    <div class="homepage-box">
+      <h1>AIClash</h1>
+      <p>AIClash is clashing live AIs safely & harmoniously. </p>
+      <p><a class="btn btn-primary btn-lg" href="/platform/sandbox/" role="button">Start now</a></p>
+    </div>
+  </div>
+</div>
+<div class="homepage-next">
+  <a>
+    <div>
+      <span class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span>
+    </div>
+  </a>
+</div>
+
+<div class="">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-10 col-md-9 col-sm-8 col-xs-12">
+        <h1>AIClash 评测平台选手接口文档</h1>
+        <h2 id="section">全局变量</h2>
+
+<p>选手应使用基本 JavaScript 语法编写代码, 通常不会因本平台全局变量的变化而导致问题. 若有更高级的需求, 可以参阅此部分. </p>
+
+<pre><code>Infinity: Infinity
+Array: function Array() { [native code] }
+ArrayBuffer: function ArrayBuffer() { [native code] }
+Blob: function Blob() { [native code] }
+Boolean: function Boolean() { [native code] }
+DataView: function DataView() { [native code] }
+Date: function Date() { [native code] }
+Error: function Error() { [native code] }
+EvalError: function EvalError() { [native code] }
+EventSource: function EventSource() { [native code] }
+FileError: function FileError() { [native code] }
+FileException: function FileException() { [native code] }
+FileReader: function FileReader() { [native code] }
+FileReaderSync: function FileReaderSync() { [native code] }
+Float32Array: function Float32Array() { [native code] }
+Float64Array: function Float64Array() { [native code] }
+Function: function Function() { [native code] }
+JSON: JSON
+Math: MathConstructor
+MessageChannel: function MessageChannel() { [native code] }
+MessageEvent: function MessageEvent() { [native code] }
+NaN: NaN
+Number: function Number() { [native code] }
+Object: function Object() { [native code] }
+RangeError: function RangeError() { [native code] }
+ReferenceError: function ReferenceError() { [native code] }
+RegExp: function RegExp() { [native code] }
+String: function String() { [native code] }
+SyntaxError: function SyntaxError() { [native code] }
+TEMPORARY: 0
+TypeError: function TypeError() { [native code] }
+URIError: function URIError() { [native code] }
+URL: function URL() { [native code] }
+WebSocket: function WebSocket() { [native code] }
+WorkerLocation: function WorkerLocation() { [native code] }
+XMLHttpRequest: function XMLHttpRequest() { [native code] }
+addEventListener: function addEventListener() { [native code] }
+close: function close() { [native code] }
+constructor: function DedicatedWorkerContext() { [native code] }
+decodeURI: function decodeURI() { [native code] }
+decodeURIComponent: function decodeURIComponent() { [native code] }
+dispatchEvent: function dispatchEvent() { [native code] }
+encodeURI: function encodeURI() { [native code] }
+encodeURIComponent: function encodeURIComponent() { [native code] }
+escape: function escape() { [native code] }
+eval: function eval() { [native code] }
+hasOwnProperty: function hasOwnProperty() { [native code] }
+importScripts: function importScripts() { [native code] }
+isFinite: function isFinite() { [native code] }
+isNaN: function isNaN() { [native code] }
+isPrototypeOf: function isPrototypeOf() { [native code] }
+location: WorkerLocation
+navigator: WorkerNavigator
+onMyTurn: function onMyTurn() { ... }
+parseFloat: function parseFloat() { [native code] }
+parseInt: function parseInt() { [native code] }
+postMessage: function postMessage() { [native code] }
+propertyIsEnumerable: function propertyIsEnumerable() { [native code] }
+removeEventListener: function removeEventListener() { [native code] }
+self: DedicatedWorkerContext
+toLocaleString: function toLocaleString() { [native code] }
+toString: function toString() { [native code] }
+undefined: undefined
+unescape: function unescape() { [native code] }
+valueOf: function valueOf() { [native code] }
+</code></pre>
+
+<h2 id="section-1">注册被触发的方法</h2>
+
+<p>当轮到选手的回合时, 方法 <code>onMyTurn</code> 会被以当前状态为参数调用. </p>
+
+<pre><code>onMyTurn(game);
+</code></pre>
+
+<p>因此选手应编写自己的代码并赋值给全局变量 <code>onMyTurn</code>. </p>
+
+<pre><code>onMyTurn = function(g) {
+	...
+};
+</code></pre>
+
+<p>或者, </p>
+
+<pre><code>var myCode = function(status) {
+	...
+};
+
+onMyTurn = myCode;
+</code></pre>
+
+<h2 id="section-2">游戏状态的表示</h2>
+
+<p>游戏状态由调用选手代码时通过参数给出, 所有状态均在一个对象中. </p>
+
+<pre><code>var game = {
+    'width': 200, 
+    'height': 150, 
+    'gnomes': [
+	{
+	    'x': 0, 
+	    'y': 0
+	}, 
+	...
+    ], 
+    'map': {
+	'data': [
+	    [
+	        0,
+	        1,
+	        ...
+	    ],
+	    ...
+	],
+	'visited': [
+	    [
+	        3, 
+	        2, 
+	        ...
+	    ],
+	    ...
+	]
+    }
+};
+</code></pre>
+
+<p>注意: 每回合得到的对象仅确保准确描述当前玩家可见视野中的内容! 访问当前视野外的内容会导致出错终止运行或得到过时信息. </p>
+
+<h3 id="section-3">例子</h3>
+
+<h4 id="section-4">查询第二个地精的位置</h4>
+
+<pre><code>var gX = game.gnomes[1].x; // typeof gX === 'number'
+var gY = game.gnomes[1].y; // typeof gY === 'number'
+</code></pre>
+
+<h4 id="x-y-">查询对方在 <code>(x, y)</code> 处经过的次数</h4>
+
+<pre><code>var c = game.map.visited[x][y]; // typeof c === 'number'
+</code></pre>
+
+<h4 id="x-y--1">查询 <code>(x, y)</code> 处与四周的连通状态</h4>
+
+<pre><code>var c = game.map.data[x][y]; // typeof c === 'number'
+</code></pre>
+
+<p>说明: <code>c</code> 的值表示此方格与上右下左四个方向的连通状态: </p>
+
+<ul>
+  <li>若 <code>c &amp; 1 &gt; 0</code> 则 <code>c</code> 与上方方格连通, </li>
+  <li>若 <code>c &amp; 2 &gt; 0</code> 则 <code>c</code> 与右方方格连通, </li>
+  <li>若 <code>c &amp; 4 &gt; 0</code> 则 <code>c</code> 与下方方格连通, </li>
+  <li>若 <code>c &amp; 8 &gt; 0</code> 则 <code>c</code> 与左方方格连通. </li>
+</ul>
+
+<h2 id="section-5">选手可以调用的接口</h2>
+
+<h3 id="section-6">深度复制一个对象的函数</h3>
+
+<pre><code>deepClone: deepClone(obj) { [native code] }
+</code></pre>
+
+<p>将会返回一个新的属性和值与 <code>obj</code> 相同的对象(递归复制). </p>
+
+<h2 id="section-7">推荐使用的调试用函数</h2>
+
+<p><strong>实际评测时, console 对象会被删除, 如果选手提交的代码中包含此对象, 将会出错而无法继续运行!</strong></p>
+
+<h3 id="section-8">打印变量至控制台的函数</h3>
+
+<pre><code>console.log();
+</code></pre>
+
+<h3 id="section-9">打印数组至控制台的函数</h3>
+
+<pre><code>console.table();
+</code></pre>
+
+      </div>
+      <div class="col-lg-2 col-md-3 col-sm-4 col-xs-12">
+        <h4>Recent Posts</h4>
+
+        <div class="">
+          <h5 class=""><a href="/platform/2014/12/26/rules-updated.html" title="比赛规则时间相关部分更新">比赛规则时间相关部分更新</a></h5>
+        </div>
+
+        <div class="">
+          <h5 class=""><a href="/platform/2014/12/21/lets-start.html" title="AIClash 评测平台发布">AIClash 评测平台发布</a></h5>
+        </div>
+
+
+      </div>
+  </div>
+</div>
+<footer>
+  <hr>
+  <div class="container">
+    by <a href="http://i.makelove.expert" target="_blank">MYSun</a>
+  </div>
+</footer>
+
+
+        <div id="menu-wrap" style="display: none;">
+    <div id="menu">
+      <ul class="nav nav-pills nav-stacked">
+        <li>
+          <a href="/platform/"><big>AIClash</big></a>
+        </li>
+        <li>
+          <a href="/platform/"><span class="glyphicon glyphicon-home"></span>&nbsp;Home</a>
+        </li>
+        <li>
+          <a href="/platform/intro/"><span class="glyphicon glyphicon-info-sign"></span>&nbsp;Introduction</a>
+        </li>
+        <li>
+          <a href="/platform/sandbox/"><span class="glyphicon glyphicon-tower"></span>&nbsp;Sandbox</a>
+        </li>
+        <li>
+          <a href="/platform/api/"><span class="glyphicon glyphicon-file"></span>&nbsp;APIs</a>
+        </li>
+<!--        <li>
+          <a href="/platform/demo/"><span class="glyphicon glyphicon-send"></span>&nbsp;Demos</a>
+        </li>-->
+      </ul>
+    </div>
+  </div>
+  <a class="btn btn-primary" id="menu-btn"><span class="glyphicon glyphicon-th"></span>&nbsp;Menu</a>
+
+    </div>
+
+    <script src="/platform/assets/lib/bootstrap/js/bootstrap.min.js"></script>
+    <script src="/platform/assets/lib/prefixfree/js/prefixfree.min.js"></script>
+    <script src="/platform/assets/js/scripts.js"></script>
+    <script>
+  ga = function () {};
+
+  ga('create', 'UA-57975752-1', 'auto');
+  ga('send', 'pageview');
+
+    </script>
+  </body>
+</html>
