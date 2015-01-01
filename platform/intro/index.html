@@ -132,7 +132,7 @@
 
 <h3 id="section-2">地图</h3>
 
-<p>游戏地图为一个 <code>200 × 150</code> 的格子网络. 每个格子(cell)与其上, 下, 左, 右可以有连接, 其中处在边界上的格子在边界外方向上无连接. 地图由随机的 Kruskal 算法生成, 源码见<a href="/platform/assets/js/lib/map.js">此处</a>. </p>
+<p>游戏地图为一个 <code>100 × 75</code> 的格子网络. 每个格子(cell)与其上, 下, 左, 右可以有连接, 其中处在边界上的格子在边界外方向上无连接. 地图由在随机的 Kruskal 算法基础上, 额外随机打通一些边而成, 源码见<a href="/platform/assets/js/lib/map.js">此处</a>. </p>
 
 <p>在游戏中连接状态用一个数字表示. 
 设 <code>c</code> 为一个格子: </p>
@@ -201,7 +201,7 @@
 <p>当以下条件之一被满足时, 游戏结束(开发版并未设置此判断): </p>
 
 <ul>
-  <li>有任一方地精到达另一方起点时; </li>
+  <li>有任一方的一个或以上地精到达另一方起点时; </li>
   <li>双方均已超时. </li>
 </ul>
 
@@ -211,7 +211,11 @@
 
 <h3 id="section-7">积分制度</h3>
 
-<p>比赛将采用<a href="http://en.wikipedia.org/wiki/Elo_rating_system">等级分制度</a>积分, 最终将生成排名结果返回给主办方处理. </p>
+<p>比赛将采用<a href="http://en.wikipedia.org/wiki/Elo_rating_system">等级分制度</a>积分, 最终将生成 <code>0</code> 到 <code>100</code> 的分数返回给主办方处理. </p>
+
+<p>其中, 初始 ELO Rating 为 <code>2000</code>, <code>K</code> 为 <code>15</code>, 加入谁也赢不了的和谁都赢得了的对照代码各一份, 比赛顺序为随机, 每个提交代码的队伍的代码分别都会与其他所有提交代码的队伍的代码和两份对照代码比赛一次. 一轮评测之后, 两份对照代码分别作为 0 和 100 的对照分数. 在本轮这之后, 将根据时间和代码质量挑出前几份代码在现场评测一次. </p>
+
+<p>设最后第 <code>i</code> 份代码 rating 为 <code>R_i</code>, 谁也赢不了的和谁都赢得了的对照代码 rating 为 <code>R_0</code> 和 <code>R_m</code>, 则该份代码得分为 <code>100 * (R_i - R_m) / (R_0 - R_m)</code>. 实际上, <code>R_0</code> 和 <code>R_m</code> 只与参赛队伍数有关, 设有 <code>n</code> 支队伍, 则 <code>R_0</code> 为 <code>2000 - 15 * n</code>, <code>R_m</code> 为 <code>2000 + 15 * n</code>. </p>
 
 <h2 id="section-8">参赛入门</h2>
 
@@ -242,17 +246,17 @@
 
 <h3 id="section-12">调试</h3>
 
-<p>由于我们的评测平台在线版本使用 web worker 机制防止选手作弊, 所以调试时需要在 Chrome 中打开 worker 调试面板, <a href="http://www.nczonline.net/blog/2009/08/25/web-workers-errors-and-debugging/">这里</a>和<a href="http://blog.csdn.net/donghao526/article/details/9664701">这里</a>讲述了 web worker 中代码的调试方法. </p>
+<p>由于我们的评测平台在线版本使用 web worker 机制防止选手作弊, <a href="http://www.nczonline.net/blog/2009/08/25/web-workers-errors-and-debugging/">这里</a>和<a href="http://blog.csdn.net/donghao526/article/details/9664701">这里</a>讲述了 web worker 中代码的调试方法. </p>
 
-<p>调试时打开 Chrome 开发者工具, 装载代码(点击 <code>Load</code> )完毕后, 在 <code>Sources</code> 标签中的右侧点击 <code>Workers</code> 打开 Web Worker 调试窗口, 这里的 <code>Source</code> 标签中, <code>(no domain)</code> 下的代码即为调试选手提交的脚本. </p>
+<p>调试时打开 Chrome 开发者工具, 点击 <code>Start</code> 之后, 在开发者工具中的 <code>Sources</code> 标签里, <code>(no domain)</code> 下的代码即为选手提交的脚本. </p>
 
-<p>_注意: 每次装载都会产生新的 Web Worker 线程, 需要重新打开 Web Worker 调试窗口. _</p>
+<p>_注意: 每次开始都会产生新的 Web Worker 线程. _</p>
 
 <h2 id="section-13">关于</h2>
 
 <p>作者: Simonmysun</p>
 
-<!--鸣谢: Friends-->
+<p>鸣谢: J hu from DLUT provides the initial idea. </p>
 
 <h2 id="copyright--licence">版权和开放许可 - Copyright &amp; Licence</h2>
 
