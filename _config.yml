@@ -1,4 +1,4 @@
-baseurl:          /AICLASH
+baseurl:          /platform
 
 markdown:         kramdown
 highlighter:      pygments
