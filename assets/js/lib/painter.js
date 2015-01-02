@@ -65,6 +65,13 @@ function Painter(canvas, game, delay) {
             ctx.lineTo((x - 0.5) * cellSize * 2 + cellSize / 2, y * cellSize * 2 + cellSize / 2);
             ctx.stroke();
         }
+        ctx.fillStyle = 'rgba(0,0,0,.2)';
+        ctx.fillRect(
+            x * cellSize * 2,
+            y * cellSize * 2,
+            cellSize,
+            cellSize
+        );
     };
     self.renderAll = function() {
         var cellSize = 400 / game.width;
