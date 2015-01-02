@@ -113,6 +113,6 @@ function Painter(canvas, game, delay) {
         var y = event.offsetY;
         x = Math.floor(x / cellSize);
         y = Math.floor(y / cellSize);
-        location.hash = x + ',' + y;
+        location.hash = y + ',' + x;
     }, false)
 }
