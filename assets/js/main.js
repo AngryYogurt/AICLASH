@@ -60,7 +60,7 @@ requirejs([], function() {
             document.body.appendChild( stats.domElement );
             $.when(
                 $('.loader-wrapper').fadeOut(),
-                $.get('/assets/js/underscore-min.js'),
+                $.get('/platform/assets/js/underscore-min.js'),
                 $.get('/player1.js'),
                 $.get('/player2.js')
             ).done(function (_0, underscore, player1, player2) {
