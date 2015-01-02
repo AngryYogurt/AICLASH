@@ -100,16 +100,29 @@ onMyTurn = do ->
     if not isStartAtLeftTop
       x = mapH - i - 1
       y = mapW - j - 1
+      return backDir[this[y][x]]
     else
       x = i
       y = j
-    return this[y][x]
+      return this[y][x]
 
   backDir =
+    0: 0
     1: 4
-    4: 1
     2: 8
+    3: 12
+    4: 1
+    5: 5
+    6: 9
+    7: 13
     8: 2
+    9: 6
+    10: 10
+    11: 14
+    12: 3
+    13: 7
+    14: 11
+    15: 15
 
   init = _.once ->
     isStartAtLeftTop = game.gnomes[0].x == 0 and game.gnomes[0].y == 0
@@ -132,8 +145,6 @@ onMyTurn = do ->
         gnome.i = gnome.y
         gnome.j = gnome.x
 
-
-
     rememberMap()
     simplifyMap()
     mapC = _.map(map, (row) -> row.slice(0))
@@ -147,7 +158,7 @@ onMyTurn = do ->
     gj = game.gnomes[0].j
     v = map[gi][gj]
 
-    if v == 0
+    if v == undefined
       debugger
     dirs = [2, 4, 1, 8]
     myVisited[gi][gj]++
@@ -173,6 +184,7 @@ onMyTurn = do ->
           ngi = gi
           ngj = gj - 1
       powers[d] -= myVisited[ngi][ngj] * 100
+
     nd = _.chain(powers)
     .pairs()
     .sortBy((x) -> -x[1])
@@ -185,7 +197,6 @@ onMyTurn = do ->
     lastDir = action[0]
     if not isStartAtLeftTop
       action = _.map(action, (v) -> backDir[v])
-
     return action
 
   return onMyTurn
