@@ -1,12 +1,14 @@
+log = console.log
+
 mapH = 24
 mapW = 32
-gnomeDir = []
 map = []
 _game = {}
 for i in [0..mapH - 1]
   map[i] = []
 
-first = true
+lastDir = 0
+
 isStartAtLeftTop = true
 
 ii = 0
@@ -35,7 +37,7 @@ isDeadEnd = (v) ->
   return v in [1, 2, 4, 8]
 
 isGnome = (i, j)->
-  return _.any(_game.gnomes, (gnome) -> gnome.y == i and gnome.x == j)
+  return _.any(_game.gnomes, (gnome) -> gnome.getR() == i and gnome.getC() == j)
 
 isDest = (i, j) ->
   return i == mapH - 1 and j == mapW - 1
@@ -67,7 +69,8 @@ simplifyMap = ->
         if map[i][j] < 0
           debugger
           return
-      #console.log(i, j, map[i][j], "m--m", d, "equal",)
+  #console.log(i, j, map[i][j], "m--m", d, "equal",)
+  console.table(map)
 
 _mapGet = (i, j) ->
   if not isStartAtLeftTop
@@ -92,6 +95,12 @@ _getC = ->
     c = this.x
   return c
 
+backDir =
+  1: 4
+  4: 1
+  2: 8
+  8: 2
+
 init = _.once ->
   isStartAtLeftTop = _game.gnomes[0].x == 0 and _game.gnomes[0].y == 0
 
@@ -112,27 +121,26 @@ onMyTurn = (game) ->
 
 
   ii++
-  if ii == 12
+  if ii == 1000
     console.table(map)
   #
   action = []
-  gnomeDir[0] = turnRight(gnomeDir[0])
-  while not check(_game, _game.gnomes[0], gnomeDir[0])
-    gnomeDir[0] = turnLeft(gnomeDir[0])
-  action[0] = gnomeDir[0]
-  gnomeDir[1] = turnLeft(gnomeDir[1])
-  while not check(_game, _game.gnomes[1], gnomeDir[1])
-    gnomeDir[1] = turnRight(gnomeDir[1])
-  action[1] = gnomeDir[1]
-  availableActions = []
-  for i in [1, 2, 4, 8]
-    if check(_game, _game.gnomes[2], i)
-      availableActions.push(i)
-  action[2] = availableActions[Math.floor(Math.random() * availableActions.length)]
+  v = map[game.gnomes[0].getR()][game.gnomes[0].getC()]
+  if v == 0
+    debugger
+  dirs = [2, 4, 1, 8]
+  dirs = _.without(dirs, backDir[lastDir])
+  dirs.push(backDir[lastDir])
+  action[0] = _.find(dirs, (x) -> (v & x) > 0)
+
+  lastDir = action[0]
   #
+  action[1] = action[2] = action[0]
   if not isStartAtLeftTop
-    dirMap = {1: 4, 4: 1, 2: 8, 8: 2}
-    action = _.map(action, (v) -> dirMap[v])
+    action = _.map(action, (v) -> backDir[v])
+  console.log(game.gnomes[0].getR(), game.gnomes[0].getC())
+  console.log(dirs)
+  console.log(action)
   return action
 
 
