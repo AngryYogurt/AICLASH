@@ -13,7 +13,8 @@ ii = 0
 
 remember = ->
   travelVisions (i, j) ->
-    map[i][j] = _game.map.data.get(i, j)
+    if map[i][j] == undefined
+      map[i][j] = _game.map.data.get(i, j)
 
 travelVision = (gnome, callback) ->
   vision = gnome.vision
@@ -44,11 +45,10 @@ simplifyMap = ->
     while isDeadEnd(map[i][j])
       if isGnome(i, j) or isDest(i, j)
         break
-      if ii == 1
-        console.log("find dead", i, j, map[i][j], "go to")
-      v = map[i][j]
-      map[i][j] = 0
-      switch v
+      #console.log("find dead", i, j, map[i][j], "go to")
+      _i = i
+      _j = j
+      switch map[i][j]
         when 1
           i--
           d = 4
@@ -62,9 +62,12 @@ simplifyMap = ->
           j--
           d = 2
       if map[i][j] != undefined
+        map[_i][_j] = 0
         map[i][j] -= d
-      if ii == 1
-        console.log(i, j, map[i][j], "m--m", d, "equal",)
+        if map[i][j] < 0
+          debugger
+          return
+      #console.log(i, j, map[i][j], "m--m", d, "equal",)
 
 _mapGet = (i, j) ->
   if not isStartAtLeftTop
