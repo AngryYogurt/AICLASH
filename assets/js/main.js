@@ -60,13 +60,14 @@ requirejs([], function() {
             document.body.appendChild( stats.domElement );
             $.when(
                 $('.loader-wrapper').fadeOut(),
+                $.get('/assets/js/underscore-min.js'),
                 $.get('/player1.js'),
                 $.get('/player2.js')
-            ).done(function (_0, player1, player2) {
+            ).done(function (_0, underscore, player1, player2) {
                 setTimeout(function () {
                     $('#btn-run').toggleClass('btn-success').toggleClass('btn-danger').toggleClass('text-stop').toggleClass('text-run').find('span').toggleClass('glyphicon-play').toggleClass('glyphicon-stop');
-                    game.setScript(0, player1[0]);
-                    game.setScript(1, player2[0]);
+                    game.setScript(0, underscore[0] + player1[0]);
+                    game.setScript(1, underscore[0] + player2[0]);
                     game.run();
                 }, 200);
             });
