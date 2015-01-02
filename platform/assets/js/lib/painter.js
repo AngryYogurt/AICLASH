@@ -106,4 +106,13 @@ function Painter(canvas, game, delay) {
         requestAnimationFrame(render);
     };
     render();
+
+    canvas.addEventListener('mousemove', function (event) {
+        var cellSize = 800 / game.width;
+        var x = event.offsetX;
+        var y = event.offsetY;
+        x = Math.floor(x / cellSize);
+        y = Math.floor(y / cellSize);
+        location.hash = x + ',' + y;
+    }, false)
 }
