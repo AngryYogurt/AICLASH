@@ -2,11 +2,15 @@ onMyTurn = do ->
   log = -> console.log(arguments)
 
   game = {}
-  mapH = 24
-  mapW = 32
+  mapH = 75
+  mapW = 100
   map = []
+  myVisited = []
   for i in [0..mapH - 1]
     map[i] = []
+    myVisited[i] = []
+    for j in [0..mapW - 1]
+      myVisited[i][j] = 0
   lastDir = 0
   isStartAtLeftTop = true
 
@@ -65,10 +69,32 @@ onMyTurn = do ->
         if map[i][j] != undefined
           map[_i][_j] = 0
           map[i][j] -= d
-          if map[i][j] < 0
-            debugger
-            return
-    #log(i, j, map[i][j], "m--m", d, "equal",)
+  #log(i, j, map[i][j], "m--m", d, "equal",)
+
+  simplifyMapC = (m) ->
+    for i in [0..mapH - 1]
+      for j in [0..mapW - 1]
+        do (i, j) ->
+          while isDeadEnd(m[i][j])
+            #console.log("find dead", i, j, map[i][j], "go to")
+            __i = i
+            __j = j
+            switch m[i][j]
+              when 1
+                i--
+                d = 4
+              when 2
+                j++
+                d = 8
+              when 4
+                i++
+                d = 1
+              when 8
+                j--
+                d = 2
+            if m[i][j] != undefined
+              m[__i][__j] = 0
+              m[i][j] -= d
 
   _mapGet = (i, j) ->
     if not isStartAtLeftTop
@@ -87,10 +113,14 @@ onMyTurn = do ->
 
   init = _.once ->
     isStartAtLeftTop = game.gnomes[0].x == 0 and game.gnomes[0].y == 0
+    mapH = game.height
+    mapW = game.width
 
   onMyTurn = (g) ->
     game = g
     ii++
+
+    init()
 
     game.map.data.get = _mapGet
     game.map.visited.get = _mapGet
@@ -102,31 +132,59 @@ onMyTurn = do ->
         gnome.i = gnome.y
         gnome.j = gnome.x
 
-    init()
+
 
     rememberMap()
     simplifyMap()
+    mapC = _.map(map, (row) -> row.slice(0))
+    simplifyMapC(mapC)
 
     if ii == 1000
-      console.table(map)
+      console.table(mapC)
 
     action = []
-    v = map[game.gnomes[0].i][game.gnomes[0].j]
+    gi = game.gnomes[0].i
+    gj = game.gnomes[0].j
+    v = map[gi][gj]
+
     if v == 0
       debugger
     dirs = [2, 4, 1, 8]
-    dirs = _.without(dirs, backDir[lastDir])
-    dirs.push(backDir[lastDir])
-    action[0] = _.find(dirs, (x) -> (v & x) > 0)
+    myVisited[gi][gj]++
+    powers = _.object([1, 2, 4, 8], [0, 0, 0, 0])
+
+    powers[2] += 100
+    powers[4] += 100
+
+    powers[backDir[lastDir]] -= 10000
+
+    for d in _.filter([1, 2, 4, 8], (x) -> (v & x) > 0)
+      switch d
+        when 1
+          ngi = gi - 1
+          ngj = gj
+        when 2
+          ngi = gi
+          ngj = gj + 1
+        when 4
+          ngi = gi + 1
+          ngj = gj
+        when 8
+          ngi = gi
+          ngj = gj - 1
+      powers[d] -= myVisited[ngi][ngj] * 100
+    nd = _.chain(powers)
+    .pairs()
+    .sortBy((x) -> -x[1])
+    .map((x) -> x[0])
+    .find((x) -> (v & x) > 0)
+    .value()
+    action[0] = nd
     action[1] = action[2] = action[0]
 
     lastDir = action[0]
     if not isStartAtLeftTop
       action = _.map(action, (v) -> backDir[v])
-
-    log(game.gnomes[0].i, game.gnomes[0].j)
-    log(dirs)
-    log(action)
 
     return action
 
