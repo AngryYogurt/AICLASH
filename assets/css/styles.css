@@ -1,3 +1,7 @@
+#ctrl-btn, .dg.ac, #menu-btn, #stats {
+    display: none;
+}
+
 #main-wrap, #menu-wrap, #code-editor-wrap, #canvas-wrap, .code-editor {
     position: absolute!important;
     top: 0;
