@@ -150,8 +150,6 @@ onMyTurn = do ->
     mapC = _.map(map, (row) -> row.slice(0))
     simplifyMapC(mapC)
 
-    if ii == 1000
-      console.table(mapC)
 
     action = []
     gi = game.gnomes[0].i
