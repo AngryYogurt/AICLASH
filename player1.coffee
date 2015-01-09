@@ -7,12 +7,21 @@ onMyTurn = do ->
   map = []
   myVisited = []
   myLooked = []
+  mapPower = []
+  myWay = []
+
   for i in [0..mapH - 1]
     map[i] = []
     myVisited[i] = []
     myLooked[i] = []
+    mapPower[i] = []
     for j in [0..mapW - 1]
       myVisited[i][j] = 0
+      mapPower[i][j] = (i + j) * 100
+
+  mapPower[mapH - 1][mapW - 1] += 999999
+  mapPower[0][mapW - 1] += 10000
+  mapPower[mapH - 1][0] += 10000
   lastDir = 0
   isStartAtLeftTop = true
 
@@ -70,7 +79,9 @@ onMyTurn = do ->
             d = 2
         if map[i][j] != undefined
           map[_i][_j] = 0
-          map[i][j] -= d
+          myVisited[_i][_j]++
+          if (map[i][j] & d) > 0
+            map[i][j] -= d
   #log(i, j, map[i][j], "m--m", d, "equal",)
 
   simplifyMapC = (m) ->
@@ -96,7 +107,8 @@ onMyTurn = do ->
                 d = 2
             if m[i][j] != undefined
               m[__i][__j] = 0
-              m[i][j] -= d
+              if (map[i][j] & d) > 0
+                m[i][j] -= d
 
   _mapGet = (i, j) ->
     if not isStartAtLeftTop
@@ -152,6 +164,8 @@ onMyTurn = do ->
     mapC = _.map(map, (row) -> row.slice(0))
     simplifyMapC(mapC)
 
+    myWay.push({i: gnome.i, j: gnome.j} for gnome in game.gnomes)
+
 
     if ii == 1000
       console.table(mapC)
@@ -165,7 +179,7 @@ onMyTurn = do ->
       debugger
     dirs = [2, 4, 1, 8]
     myVisited[gi][gj]++
-    powers = _.object([1, 2, 4, 8], [Math.random(), Math.random(), Math.random(), Math.random()])
+    powers = _.object([1, 2, 4, 8], [0, 0, 0, 0])
 
     powers[2] += 100
     powers[4] += 100
@@ -187,6 +201,9 @@ onMyTurn = do ->
           ngi = gi
           ngj = gj - 1
       powers[d] -= myVisited[ngi][ngj] * 100
+      powers[d] += 10000 if game.map.visited.get(ngi, ngj)  # TODO: 只对部分地精生效
+
+
 
     nd = _.chain(powers)
     .pairs()
@@ -203,6 +220,22 @@ onMyTurn = do ->
     return action
 
   return onMyTurn
+
+  pruneJingWeiTianHai = (map, part, i) ->
+    if part == 'up'
+      for p in myWay
+        j = 0
+        while myVisited[j][i] == 0
+          map[j][i] = 0
+          j++
+      map[j + 1] -= 1
+    else if part == 'left'
+      for i in [0..mapH - 1]
+        j = 0
+        while myVisited[i][j] == 0
+          map[i][j] = 0
+          j++
+      map[j + 1] -= 8
 
   prune = (map) ->
     for i in [0..mapH - 1]
@@ -224,7 +257,6 @@ onMyTurn = do ->
               while not (map[i][j] in [3, 5, 9, 6, 10, 12])
                 return
             myLooked[__i][__j] = true
-
 
 
 # TODO: jingweitianhai
