@@ -1,4 +1,5 @@
 function getUrl(str,cb) {
+    return;
     gapi.client.setApiKey('AIzaSyBlJgUgEw895gv3pT1balcsj07orOK1sk0');
     gapi.client.load('urlshortener', 'v1', function() {
         gapi.client.urlshortener.url.insert({
