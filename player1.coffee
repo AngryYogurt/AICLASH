@@ -163,6 +163,8 @@ onMyTurn = do ->
     simplifyMap()
     mapC = _.map(map, (row) -> row.slice(0))
     simplifyMapC(mapC)
+    #debugger
+    prune(map)
 
     myWay.push({i: gnome.i, j: gnome.j} for gnome in game.gnomes)
 
@@ -175,7 +177,7 @@ onMyTurn = do ->
     gj = game.gnomes[0].j
     v = map[gi][gj]
 
-    if v == undefined
+    if v == 0
       debugger
     dirs = [2, 4, 1, 8]
     myVisited[gi][gj]++
@@ -201,8 +203,7 @@ onMyTurn = do ->
           ngi = gi
           ngj = gj - 1
       powers[d] -= myVisited[ngi][ngj] * 100
-      powers[d] += 10000 if game.map.visited.get(ngi, ngj)  # TODO: 只对部分地精生效
-
+      powers[d] += 10000 if game.map.visited.get(ngi, ngj) # TODO: 只对部分地精生效
 
 
     nd = _.chain(powers)
@@ -218,8 +219,6 @@ onMyTurn = do ->
     if not isStartAtLeftTop
       action = _.map(action, (v) -> backDir[v])
     return action
-
-  return onMyTurn
 
   pruneJingWeiTianHai = (map, part, i) ->
     if part == 'up'
@@ -238,25 +237,40 @@ onMyTurn = do ->
       map[j + 1] -= 8
 
   prune = (map) ->
+    cutVisited = []
     for i in [0..mapH - 1]
-      for j in [0..mapW - 1]
-        do (i, j) ->
-          while map[i][j] != 0
-            __i = i
-            __j = j
-            switch map[i][j]
-              when 1
-                i--
-              when 2
-                j++
-              when 4
-                i++
-              when 8
-                j--
-            if myLooked[i][j]
-              while not (map[i][j] in [3, 5, 9, 6, 10, 12])
-                return
-            myLooked[__i][__j] = true
+      cutVisited[i] = []
+
+    pruneTravel = (i, j, cameFrom) ->
+      cutVisited[i][j] = 1
+
+      for d in [2, 4, 1, 8]
+        if (map[i][j] & d) > 0 and cameFrom != d
+          switch d
+            when 1
+              ngi = i - 1
+              ngj = j
+            when 2
+              ngi = i
+              ngj = j + 1
+            when 4
+              ngi = i + 1
+              ngj = j
+            when 8
+              ngi = i
+              ngj = j - 1
+          if map[i][j] == undefined
+            continue
+          if cutVisited[ngi][ngj]?
+            if map[i][j] == cameFrom + d
+              map[i][j] -= d
+              map[ngi][ngj] -= backDir[d]
+            break
+          pruneTravel(ngi, ngj, backDir[d])
+      cutVisited[i][j] = undefined
 
 
-# TODO: jingweitianhai
+    for gnome in game.gnomes
+      pruneTravel(gnome.i, gnome.j, 0)
+
+  return onMyTurn
