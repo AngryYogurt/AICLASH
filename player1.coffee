@@ -6,9 +6,11 @@ onMyTurn = do ->
   mapW = 100
   map = []
   myVisited = []
+  myLooked = []
   for i in [0..mapH - 1]
     map[i] = []
     myVisited[i] = []
+    myLooked[i] = []
     for j in [0..mapW - 1]
       myVisited[i][j] = 0
   lastDir = 0
@@ -150,6 +152,7 @@ onMyTurn = do ->
     mapC = _.map(map, (row) -> row.slice(0))
     simplifyMapC(mapC)
 
+
     if ii == 1000
       console.table(mapC)
 
@@ -162,7 +165,7 @@ onMyTurn = do ->
       debugger
     dirs = [2, 4, 1, 8]
     myVisited[gi][gj]++
-    powers = _.object([1, 2, 4, 8], [0, 0, 0, 0])
+    powers = _.object([1, 2, 4, 8], [Math.random(), Math.random(), Math.random(), Math.random()])
 
     powers[2] += 100
     powers[4] += 100
@@ -200,3 +203,28 @@ onMyTurn = do ->
     return action
 
   return onMyTurn
+
+  prune = (map) ->
+    for i in [0..mapH - 1]
+      for j in [0..mapW - 1]
+        do (i, j) ->
+          while map[i][j] != 0
+            __i = i
+            __j = j
+            switch map[i][j]
+              when 1
+                i--
+              when 2
+                j++
+              when 4
+                i++
+              when 8
+                j--
+            if myLooked[i][j]
+              while not (map[i][j] in [3, 5, 9, 6, 10, 12])
+                return
+            myLooked[__i][__j] = true
+
+
+
+# TODO: jingweitianhai
