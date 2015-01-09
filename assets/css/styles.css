@@ -2,7 +2,7 @@
     display: none;
 }
 
-#main-wrap, #menu-wrap, #code-editor-wrap, #canvas-wrap, .code-editor {
+#main-wrap, #menu-wrap, #code-editor-wrap, #canvas-wrap, .code-editor, .fog-wrap, .fog-clip {
     position: absolute!important;
     top: 0;
     right: 0;
@@ -281,4 +281,16 @@
 
 footer {
     margin: 20px auto;
+}
+
+.fog-wrap, .fog-clip {
+    background: #272822;
+}
+
+.fog-clip {
+    /*mask: url(#fog-mask);
+    -webkit-mask: url(#fog-mask) top left / cover;
+    clip-path: url();
+    -webkit-clip-path: url() top left / cover;*/
+    transition: all 0.1s ease;
 }
