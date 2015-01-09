@@ -134,10 +134,6 @@ Date: function Date() { [native code] }
 Error: function Error() { [native code] }
 EvalError: function EvalError() { [native code] }
 EventSource: function EventSource() { [native code] }
-FileError: function FileError() { [native code] }
-FileException: function FileException() { [native code] }
-FileReader: function FileReader() { [native code] }
-FileReaderSync: function FileReaderSync() { [native code] }
 Float32Array: function Float32Array() { [native code] }
 Float64Array: function Float64Array() { [native code] }
 Function: function Function() { [native code] }
@@ -157,9 +153,7 @@ TEMPORARY: 0
 TypeError: function TypeError() { [native code] }
 URIError: function URIError() { [native code] }
 URL: function URL() { [native code] }
-WebSocket: function WebSocket() { [native code] }
 WorkerLocation: function WorkerLocation() { [native code] }
-XMLHttpRequest: function XMLHttpRequest() { [native code] }
 addEventListener: function addEventListener() { [native code] }
 close: function close() { [native code] }
 constructor: function DedicatedWorkerContext() { [native code] }
@@ -219,12 +213,13 @@ onMyTurn = myCode;
 <p>游戏状态由调用选手代码时通过参数给出, 所有状态均在一个对象中. </p>
 
 <pre><code>var game = {
-    'width': 200, 
-    'height': 150, 
+    'width': 100, 
+    'height': 75, 
     'gnomes': [
 	{
 	    'x': 0, 
-	    'y': 0
+	    'y': 0, 
+                'vision': 15
 	}, 
 	...
     ], 
@@ -249,20 +244,23 @@ onMyTurn = myCode;
 };
 </code></pre>
 
-<p>注意: 每回合得到的对象仅确保准确描述当前玩家可见视野中的内容! 访问当前视野外的内容会导致出错终止运行或得到过时信息. </p>
+<p><strong>注意: 每回合得到的对象仅确保准确描述当前玩家可见视野中的内容! 访问当前视野外的内容会导致出错终止运行或得到过时信息.</strong></p>
 
 <h3 id="section-3">例子</h3>
 
-<h4 id="section-4">查询第二个地精的位置</h4>
+<h4 id="section-4">查询第二个地精的位置和视野</h4>
 
 <pre><code>var gX = game.gnomes[1].x; // typeof gX === 'number'
 var gY = game.gnomes[1].y; // typeof gY === 'number'
+var gV = game.gnomes[1].vision; // typeof gV === 'number'
 </code></pre>
 
 <h4 id="x-y-">查询对方在 <code>(x, y)</code> 处经过的次数</h4>
 
 <pre><code>var c = game.map.visited[x][y]; // typeof c === 'number'
 </code></pre>
+
+<p>说明: 当且仅当当前时刻存在一个己方的地精与 <code>x</code>, <code>y</code> 的曼哈顿距离小于等于其视野大小时, 访问经过的次数是有效的. </p>
 
 <h4 id="x-y--1">查询 <code>(x, y)</code> 处与四周的连通状态</h4>
 
@@ -272,31 +270,50 @@ var gY = game.gnomes[1].y; // typeof gY === 'number'
 <p>说明: <code>c</code> 的值表示此方格与上右下左四个方向的连通状态: </p>
 
 <ul>
-  <li>若 <code>c &amp; 1 &gt; 0</code> 则 <code>c</code> 与上方方格连通, </li>
-  <li>若 <code>c &amp; 2 &gt; 0</code> 则 <code>c</code> 与右方方格连通, </li>
-  <li>若 <code>c &amp; 4 &gt; 0</code> 则 <code>c</code> 与下方方格连通, </li>
+  <li>若 <code>c &amp; 1 &gt; 0</code> 则 <code>c</code> 与上方方格连通; </li>
+  <li>若 <code>c &amp; 2 &gt; 0</code> 则 <code>c</code> 与右方方格连通; </li>
+  <li>若 <code>c &amp; 4 &gt; 0</code> 则 <code>c</code> 与下方方格连通; </li>
   <li>若 <code>c &amp; 8 &gt; 0</code> 则 <code>c</code> 与左方方格连通. </li>
 </ul>
 
-<h2 id="section-5">选手可以调用的接口</h2>
+<p>当且仅当存在某一个时刻一个己方的地精与 <code>x</code>, <code>y</code> 的曼哈顿距离小于等于其视野大小时, 访问此处连通状态是有效的. </p>
 
-<h3 id="section-6">深度复制一个对象的函数</h3>
+<h2 id="section-5">选手应返回的数据</h2>
+
+<p>选手应返回一个包含三个分别表示三个地精下一步行进方向的数字的数组, 顺序与给出的地精顺序相同, 例如: </p>
+
+<pre><code>return [
+    1, 
+    4, 
+    8
+];
+</code></pre>
+
+<p>, 或者: </p>
+
+<pre><code>var result = [1, 4, 8];
+return result;
+</code></pre>
+
+<h2 id="section-6">选手可以调用的接口</h2>
+
+<h3 id="section-7">深度复制一个对象的函数</h3>
 
 <pre><code>deepClone: deepClone(obj) { [native code] }
 </code></pre>
 
 <p>将会返回一个新的属性和值与 <code>obj</code> 相同的对象(递归复制). </p>
 
-<h2 id="section-7">推荐使用的调试用函数</h2>
+<h2 id="section-8">推荐使用的调试用函数</h2>
 
 <p><strong>实际评测时, console 对象会被删除, 如果选手提交的代码中包含此对象, 将会出错而无法继续运行!</strong></p>
 
-<h3 id="section-8">打印变量至控制台的函数</h3>
+<h3 id="section-9">打印变量至控制台的函数</h3>
 
 <pre><code>console.log();
 </code></pre>
 
-<h3 id="section-9">打印数组至控制台的函数</h3>
+<h3 id="section-10">打印数组至控制台的函数</h3>
 
 <pre><code>console.table();
 </code></pre>
@@ -304,6 +321,10 @@ var gY = game.gnomes[1].y; // typeof gY === 'number'
       </div>
       <div class="col-lg-2 col-md-3 col-sm-4 col-xs-12">
         <h4>Recent Posts</h4>
+
+        <div class="">
+          <h5 class=""><a href="/platform/2015/01/04/rules-updated.html" title="地图大小变更, 计分方式确定以及一些资料">地图大小变更, 计分方式确定以及一些资料</a></h5>
+        </div>
 
         <div class="">
           <h5 class=""><a href="/platform/2014/12/26/rules-updated.html" title="比赛规则时间相关部分更新">比赛规则时间相关部分更新</a></h5>
