@@ -1,4 +1,10 @@
+that = this
+
 onMyTurn = do ->
+  if not that.console?
+    that.console =
+      log: -> null
+      table: -> null
   log = -> console.log(arguments)
 
   game = {}
@@ -79,7 +85,6 @@ onMyTurn = do ->
             d = 2
         if map[i][j] != undefined
           map[_i][_j] = 0
-          myVisited[_i][_j]++
           if (map[i][j] & d) > 0
             map[i][j] -= d
   #log(i, j, map[i][j], "m--m", d, "equal",)
@@ -165,6 +170,7 @@ onMyTurn = do ->
     simplifyMapC(mapC)
     #debugger
     prune(map)
+    pruneJingWeiTianHai(map, 0)
 
     myWay.push({i: gnome.i, j: gnome.j} for gnome in game.gnomes)
 
@@ -220,21 +226,91 @@ onMyTurn = do ->
       action = _.map(action, (v) -> backDir[v])
     return action
 
-  pruneJingWeiTianHai = (map, part, i) ->
-    if part == 'up'
-      for p in myWay
-        j = 0
-        while myVisited[j][i] == 0
-          map[j][i] = 0
-          j++
-      map[j + 1] -= 1
-    else if part == 'left'
-      for i in [0..mapH - 1]
-        j = 0
-        while myVisited[i][j] == 0
-          map[i][j] = 0
-          j++
-      map[j + 1] -= 8
+  pruneJingWeiTianHai = (map, T_T) ->
+    gnome = game.gnomes[T_T]
+    gi = gnome.i
+    gj = gnome.j
+
+    rightAlwaysWall = true
+    for j in [gj+1..mapW-1]
+      if map[gi][j] != 0
+        rightAlwaysWall = false
+        break
+    if rightAlwaysWall
+      log(gnome)
+      for j in [gj..mapW-1]
+        myVisited[gi][j]++
+
+      bfsVisited = []
+      for i in [0..mapH-1]
+        bfsVisited[i] = []
+      travels = [{i:0, j:mapW-1, cameFrom:0}]
+      while travels.length > 0
+        t = travels.shift()
+        map[t.i][t.j] = 0
+        for d in [1,2,4,8]
+          switch d
+            when 1
+              ngi = t.i - 1
+              ngj = t.j
+            when 2
+              ngi = t.i
+              ngj = t.j + 1
+            when 4
+              ngi = t.i + 1
+              ngj = t.j
+            when 8
+              ngi = t.i
+              ngj = t.j - 1
+          if ngi < 0 or ngi >= mapH or ngj < 0 or ngj >= mapW or bfsVisited[ngi][ngj]
+            continue
+          if myVisited[ngi][ngj]
+            if (map[ngi][ngj] & backDir[d]) > 0
+              map[ngi][ngj] -= backDir[d]
+          else
+            bfsVisited[ngi][ngj] = true
+            travels.push({i:ngi, j:ngj, cameFrom:backDir[d]})
+
+    downAlwaysWall = true
+    for i in [gi+1..mapH-1]
+      if map[i][gj] != 0
+        downAlwaysWall = false
+        break
+    if downAlwaysWall
+      for i in [gi..mapH-1]
+        myVisited[i][gj]++
+
+      bfsVisited = []
+      for i in [0..mapH-1]
+        bfsVisited[i] = []
+      travels = [{i:mapH-1, j:0, cameFrom:0}]
+      while travels.length > 0
+        t = travels.shift()
+        map[t.i][t.j] = 0
+        for d in [1,2,4,8]
+          switch d
+            when 1
+              ngi = t.i - 1
+              ngj = t.j
+            when 2
+              ngi = t.i
+              ngj = t.j + 1
+            when 4
+              ngi = t.i + 1
+              ngj = t.j
+            when 8
+              ngi = t.i
+              ngj = t.j - 1
+          if ngi < 0 or ngi >= mapH or ngj < 0 or ngj >= mapW or bfsVisited[ngi][ngj]
+            continue
+          if myVisited[ngi][ngj]
+            if (map[ngi][ngj] & backDir[d]) > 0
+              map[ngi][ngj] -= backDir[d]
+          else
+            bfsVisited[ngi][ngj] = true
+            travels.push({i:ngi, j:ngj, cameFrom:backDir[d]})
+
+
 
   prune = (map) ->
     cutVisited = []
