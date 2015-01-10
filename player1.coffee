@@ -22,7 +22,7 @@ onMyTurn = do ->
   mapPower[mapH - 1][mapW - 1] += 999999
   mapPower[0][mapW - 1] += 10000
   mapPower[mapH - 1][0] += 10000
-  lastDir = 0
+  lastDir = 2
   isStartAtLeftTop = true
 
   ii = 0
@@ -179,7 +179,6 @@ onMyTurn = do ->
 
     if v == 0
       debugger
-    dirs = [2, 4, 1, 8]
     myVisited[gi][gj]++
     powers = _.object([1, 2, 4, 8], [0, 0, 0, 0])
 
@@ -213,7 +212,8 @@ onMyTurn = do ->
     .find((x) -> (v & x) > 0)
     .value()
     action[0] = nd
-    action[1] = action[2] = action[0]
+    action[1] = nd
+    action[2] = action[0]
 
     lastDir = action[0]
     if not isStartAtLeftTop
@@ -244,7 +244,20 @@ onMyTurn = do ->
     pruneTravel = (i, j, cameFrom) ->
       cutVisited[i][j] = 1
 
-      for d in [2, 4, 1, 8]
+      if cameFrom == 0
+        powers = _.object([1, 2, 4, 8], [0, 0, 0, 0])
+        powers[2] += 100
+        powers[4] += 100
+        powers[backDir[lastDir]] -= 10000
+        dirs = _.chain(powers)
+        .pairs()
+        .sortBy((x) -> -x[1])
+        .map((x) -> x[0] - 0)
+        .value()
+      else
+        dirs = [2, 4, 1, 8]
+
+      for d in dirs
         if (map[i][j] & d) > 0 and cameFrom != d
           switch d
             when 1
